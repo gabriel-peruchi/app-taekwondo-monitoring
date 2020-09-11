@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="15dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/name_athlete"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/edit_name_athlete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/weight_athlete"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/edit_weight_athlete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:inputType="numberDecimal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/height_athlete"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/edit_height_athlete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:inputType="numberDecimal" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/category_athlete"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/edit_category_athlete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btn_bluetooth_devices"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="45dp"
+                android:text="@string/bluetooth_devices"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/btn_start_monitoring"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/start_monitoring" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
