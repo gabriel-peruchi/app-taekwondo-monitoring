@@ -47,4 +47,7 @@
     <string name="result">Resultado</string>
     <string name="zero">0</string>
     <string name="meters_per_second">(m/s²)</string>
+    <string name="accel_meters_per_second">Aceleração (m/s²)</string>
+    <string name="speed_meters_per_second">Velocidade (m/s)</string>
+    <string name="time_second">Tempo (s)</string>
 </resources>

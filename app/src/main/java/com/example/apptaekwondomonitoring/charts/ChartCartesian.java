@@ -3,6 +3,7 @@ package com.example.apptaekwondomonitoring.charts;
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
+import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Cartesian;
 import com.anychart.core.cartesian.series.Line;
 import com.anychart.data.Mapping;
@@ -20,7 +21,6 @@ public class ChartCartesian {
     private Cartesian cartesian;
 
     public ChartCartesian() {
-
     }
 
     public ChartCartesian(Cartesian cartesian) {
@@ -42,13 +42,18 @@ public class ChartCartesian {
         cartesian.legend().padding(0d, 0d, 10d, 0d);
     }
 
-    public void setData(List<AccelerationData> accelerationDataList) {
+    public void setLegends(String legendY, String legendX) {
+        cartesian.yAxis(0).title(legendY);
+        cartesian.xAxis(0).title(legendX);
+    }
 
-        if (accelerationDataList.size() == 0) {
-            accelerationDataList.add(new AccelerationData(0, 0, 0, 0));
+    public void setData(List<ValueDataEntry> valueDataEntries) {
+
+        if (valueDataEntries.size() == 0) {
+            valueDataEntries.add(new AccelerationData(0, 0, 0, 0));
         }
 
-        List<DataEntry> dataEntries = new ArrayList<DataEntry>(accelerationDataList);
+        List<DataEntry> dataEntries = new ArrayList<DataEntry>(valueDataEntries);
 
         cartesian.removeAllSeries();
 
@@ -103,7 +108,7 @@ public class ChartCartesian {
         anyChartView.setChart(cartesian);
     }
 
-    public void clearData(){
-        setData(new ArrayList<AccelerationData>());
+    public void clearData() {
+        setData(new ArrayList<ValueDataEntry>());
     }
 }

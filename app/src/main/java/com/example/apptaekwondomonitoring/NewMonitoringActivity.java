@@ -158,6 +158,7 @@ public class NewMonitoringActivity extends AppCompatActivity {
         } else if (!bluetoothAdapter.isEnabled()) {
             Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBluetoothIntent, ENABLE_BLUETOOTH);
+            buttonStarMonitoringListener();
         } else {
             bluetoothAble = true;
         }

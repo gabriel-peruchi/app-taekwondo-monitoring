@@ -1,19 +1,24 @@
 package com.example.apptaekwondomonitoring;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.anychart.APIlib;
 import com.anychart.AnyChartView;
+import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.example.apptaekwondomonitoring.charts.AccelerationData;
 import com.example.apptaekwondomonitoring.charts.ChartCartesian;
+import com.example.apptaekwondomonitoring.charts.SpeedData;
 import com.example.apptaekwondomonitoring.database.dao.Kick_Monitoring_ImpactDAO;
+import com.example.apptaekwondomonitoring.database.dao.Kick_Monitoring_SpeedDAO;
 import com.example.apptaekwondomonitoring.database.dao.Kick_Monitoring_WearableDAO;
 import com.example.apptaekwondomonitoring.models.Kick_Monitoring;
-import com.example.apptaekwondomonitoring.models.Kick_Monitoring_Data;
+import com.example.apptaekwondomonitoring.models.Kick_Monitoring_Accel;
 import com.example.apptaekwondomonitoring.models.Kick_Monitoring_Impact;
+import com.example.apptaekwondomonitoring.models.Kick_Monitoring_Speed;
 import com.example.apptaekwondomonitoring.models.Kick_Monitoring_Wearable;
 import com.example.apptaekwondomonitoring.utils.NumberUtils;
 
@@ -24,6 +29,7 @@ public class KickMonitoringActivity extends AppCompatActivity {
 
     private Kick_Monitoring_ImpactDAO kick_monitoring_impactDAO;
     private Kick_Monitoring_WearableDAO kick_monitoring_wearableDAO;
+    private Kick_Monitoring_SpeedDAO kick_monitoring_speedDAO;
 
     private Kick_Monitoring kick_monitoring;
 
@@ -60,12 +66,14 @@ public class KickMonitoringActivity extends AppCompatActivity {
 
         kick_monitoring_impactDAO = new Kick_Monitoring_ImpactDAO(KickMonitoringActivity.this);
         kick_monitoring_wearableDAO = new Kick_Monitoring_WearableDAO(KickMonitoringActivity.this);
+        kick_monitoring_speedDAO = new Kick_Monitoring_SpeedDAO(KickMonitoringActivity.this);
 
         kick_monitoring = (Kick_Monitoring) getIntent().getSerializableExtra("kick_monitoring");
 
         constructCardInfo();
         constructCharImpact();
         constructCharWearable();
+        constructCharSpeed();
     }
 
     private void constructCardInfo() {
@@ -102,15 +110,16 @@ public class KickMonitoringActivity extends AppCompatActivity {
 
         ChartCartesian chartCartesian = new ChartCartesian();
         chartCartesian.createDefaultSettings("Valores de Impacto do Chute");
+        chartCartesian.setLegends(getString(R.string.accel_meters_per_second), getString(R.string.time_second));
 
         List<Kick_Monitoring_Impact> kick_monitoring_impactList = kick_monitoring_impactDAO
                 .selectByKickMonitoring(kick_monitoring);
 
         List<AccelerationData> values_impact = convertToAccelerationData(
-                new ArrayList<Kick_Monitoring_Data>(kick_monitoring_impactList)
+                new ArrayList<Kick_Monitoring_Accel>(kick_monitoring_impactList)
         );
 
-        chartCartesian.setData(values_impact);
+        chartCartesian.setData(new ArrayList<ValueDataEntry>(values_impact));
         chartCartesian.setView(chart_kick_monitoring_impact);
     }
 
@@ -120,32 +129,73 @@ public class KickMonitoringActivity extends AppCompatActivity {
 
         ChartCartesian chartCartesian = new ChartCartesian();
         chartCartesian.createDefaultSettings("Valores de Aceleração do Chute");
+        chartCartesian.setLegends(getString(R.string.accel_meters_per_second), getString(R.string.time_second));
 
         List<Kick_Monitoring_Wearable> kick_monitoring_wearableList = kick_monitoring_wearableDAO
                 .selectByKickMonitoring(kick_monitoring);
 
         List<AccelerationData> values_wearable = convertToAccelerationData(
-                new ArrayList<Kick_Monitoring_Data>(kick_monitoring_wearableList)
+                new ArrayList<Kick_Monitoring_Accel>(kick_monitoring_wearableList)
         );
 
-        chartCartesian.setData(values_wearable);
+        chartCartesian.setData(new ArrayList<ValueDataEntry>(values_wearable));
         chartCartesian.setView(chart_kick_monitoring_wearable);
     }
 
-    private List<AccelerationData> convertToAccelerationData(List<Kick_Monitoring_Data> kick_monitoring_dataList) {
+    private void constructCharSpeed() {
+        AnyChartView chart_kick_monitoring_speed = findViewById(R.id.chart_kick_monitoring_speed);
+        APIlib.getInstance().setActiveAnyChartView(chart_kick_monitoring_speed);
+
+        ChartCartesian chartCartesian = new ChartCartesian();
+        chartCartesian.createDefaultSettings("Valores de Velocidade do Chute");
+        chartCartesian.setLegends(getString(R.string.speed_meters_per_second), getString(R.string.time_second));
+
+        if (kick_monitoring == null) {
+            Log.d("kick", "é nulo");
+        }
+
+        List<Kick_Monitoring_Speed> kick_monitoring_speedList = kick_monitoring_speedDAO
+                .selectByKickMonitoring(kick_monitoring);
+
+        List<SpeedData> values_speed = convertToSpeedData(
+                new ArrayList<>(kick_monitoring_speedList)
+        );
+
+        chartCartesian.setData(new ArrayList<ValueDataEntry>(values_speed));
+        chartCartesian.setView(chart_kick_monitoring_speed);
+    }
+
+    private List<AccelerationData> convertToAccelerationData(List<Kick_Monitoring_Accel> kick_monitoring_accelList) {
         List<AccelerationData> accelerationDataList = new ArrayList<>();
 
-        for (Kick_Monitoring_Data kick_monitoring_data : kick_monitoring_dataList) {
+        for (Kick_Monitoring_Accel kick_monitoring_accel : kick_monitoring_accelList) {
             accelerationDataList.add(
                     new AccelerationData(
-                            kick_monitoring_data.getSeconds(),
-                            kick_monitoring_data.getAccel_x(),
-                            kick_monitoring_data.getAccel_y(),
-                            kick_monitoring_data.getAccel_z()
+                            kick_monitoring_accel.getSeconds(),
+                            kick_monitoring_accel.getAccel_x(),
+                            kick_monitoring_accel.getAccel_y(),
+                            kick_monitoring_accel.getAccel_z()
                     )
             );
         }
 
         return accelerationDataList;
+    }
+
+    private List<SpeedData> convertToSpeedData(List<Kick_Monitoring_Speed> kick_monitoring_speedList) {
+        List<SpeedData> speedDataList = new ArrayList<>();
+
+        for (Kick_Monitoring_Speed kick_monitoring_speed : kick_monitoring_speedList) {
+            speedDataList.add(
+                    new SpeedData(
+                            kick_monitoring_speed.getSeconds(),
+                            kick_monitoring_speed.getSpeed_x(),
+                            kick_monitoring_speed.getSpeed_y(),
+                            kick_monitoring_speed.getSpeed_z()
+                    )
+            );
+        }
+
+        return speedDataList;
     }
 }

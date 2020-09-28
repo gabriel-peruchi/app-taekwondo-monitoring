@@ -1,8 +1,6 @@
 package com.example.apptaekwondomonitoring.models;
 
-import java.io.Serializable;
-
-public class Kick_Monitoring_Data {
+public class Kick_Monitoring_Accel {
 
     private Long _id;
     private Kick_Monitoring kick_monitoring;
@@ -11,11 +9,11 @@ public class Kick_Monitoring_Data {
     private Double accel_y;
     private Double accel_z;
 
-    public Kick_Monitoring_Data() {
+    public Kick_Monitoring_Accel() {
 
     }
 
-    public Kick_Monitoring_Data(Long _id, Double seconds, Double accel_x, Double accel_y, Double accel_z) {
+    public Kick_Monitoring_Accel(Long _id, Double seconds, Double accel_x, Double accel_y, Double accel_z) {
         this._id = _id;
         this.seconds = seconds;
         this.accel_x = accel_x;
