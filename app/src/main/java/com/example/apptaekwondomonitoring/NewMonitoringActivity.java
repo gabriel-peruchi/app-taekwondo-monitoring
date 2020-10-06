@@ -70,7 +70,6 @@ public class NewMonitoringActivity extends AppCompatActivity {
         button_start_monitoring.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateBluetoothAble();
                 buttonStarMonitoringListener();
             }
         });
@@ -158,7 +157,6 @@ public class NewMonitoringActivity extends AppCompatActivity {
         } else if (!bluetoothAdapter.isEnabled()) {
             Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBluetoothIntent, ENABLE_BLUETOOTH);
-            buttonStarMonitoringListener();
         } else {
             bluetoothAble = true;
         }
@@ -169,6 +167,7 @@ public class NewMonitoringActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ENABLE_BLUETOOTH && resultCode == Activity.RESULT_OK) {
             bluetoothAble = true;
+            buttonStarMonitoringListener();
         } else {
             Toast.makeText(this, "O Bluetooth precisa estar ativado!", Toast.LENGTH_SHORT).show();
         }

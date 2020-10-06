@@ -7,9 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,6 +46,7 @@ public class StartMonitoringActivity extends AppCompatActivity {
 
     private static final String ADDRESS_IMPACT_MODULE = "00:18:91:D8:3B:4E";
     private static final String ADDRESS_WEARABLE_MODULE = "00:19:08:00:50:C6";
+//    private static final String ADDRESS_WEARABLE_MODULE = "00:18:91:D8:3D:97"; // Secundário
 
     private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private BluetoothConnection bluetooth_connection_impact_module;

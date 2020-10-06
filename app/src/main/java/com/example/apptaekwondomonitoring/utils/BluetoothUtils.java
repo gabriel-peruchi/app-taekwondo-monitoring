@@ -8,14 +8,14 @@ import java.util.List;
 
 public class BluetoothUtils {
 
-    // PROTOCOLO -> a{millisegundos|accelX|accelY|accelZ}a{millisegundos|accelX|accelY|accelZ}
+    // PROTOCOLO -> a{segundos|accelX|accelY|accelZ}a{millisegundos|accelX|accelY|accelZ}
     public static List<AccelerationData> convertDataToList(StringBuilder data) {
 
         List<AccelerationData> accelerationDataList = new ArrayList<>();
 
         String[] values = data.toString().split("a");
 
-        // [{millisegundos|accelX|accelY|accelZ}]
+        // [{segundos|accelX|accelY|accelZ}]
         for (String value : values) {
 
             // Verifica se os dados estão completos
@@ -24,7 +24,7 @@ public class BluetoothUtils {
 
                 String[] dataAccelerations = value.split("\\|");
 
-                Number seconds = Double.parseDouble(dataAccelerations[0]) / 1000;
+                Number seconds = Double.parseDouble(dataAccelerations[0]);
                 Number accelX = Double.parseDouble(dataAccelerations[1]) * 9.8;
                 Number accelY = Double.parseDouble(dataAccelerations[2]) * 9.8;
                 Number accelZ = Double.parseDouble(dataAccelerations[3]) > 0

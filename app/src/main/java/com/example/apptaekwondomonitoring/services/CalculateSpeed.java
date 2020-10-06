@@ -21,6 +21,7 @@ public class CalculateSpeed {
 
         boolean movimento = false;
 
+        // Aceleração Inicial
         accelerationDataList.add(0, new AccelerationData(0, 0, 0, 0));
 
         for (int i = 1; i < accelerationDataList.size(); i++) {
@@ -28,7 +29,7 @@ public class CalculateSpeed {
             AccelerationData accelerationData = accelerationDataList.get(i);
 
             // Identificação de movimento
-            if (accelerationData.getAccelX() > 0.5 || accelerationData.getAccelY() > 0.5 || accelerationData.getAccelZ() > 0.5) {
+            if (accelerationData.getAccelX() > 1 || accelerationData.getAccelY() > 1 || accelerationData.getAccelZ() > 1) {
                 movimento = true;
             }
 

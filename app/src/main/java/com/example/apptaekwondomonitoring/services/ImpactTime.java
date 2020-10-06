@@ -13,6 +13,7 @@ public class ImpactTime {
         for (AccelerationData impactValue : impactValues) {
             if (impactValue.getAccelX() > 1) {
                 timeImpact = impactValue.getSeconds();
+                break;
             }
         }
 
