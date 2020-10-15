@@ -1,8 +1,10 @@
 package com.example.apptaekwondomonitoring.charts;
 
+import androidx.annotation.NonNull;
+
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 
-public class AccelerationData extends ValueDataEntry implements Comparable<AccelerationData>{
+public class AccelerationData extends ValueDataEntry implements Comparable<AccelerationData> {
 
     public AccelerationData(Number seconds, Number accelX, Number accelY, Number accelZ) {
         super(seconds, accelX);
@@ -29,5 +31,11 @@ public class AccelerationData extends ValueDataEntry implements Comparable<Accel
     @Override
     public int compareTo(AccelerationData otherAcclerationData) {
         return this.getSeconds().compareTo(otherAcclerationData.getSeconds());
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "{" + getSeconds() + " | " + getAccelX() + " | " + getAccelY() + " | " + getAccelZ() + "}";
     }
 }

@@ -37,6 +37,7 @@ public class ChartCartesian {
         cartesian.crosshair().yLabel(true).yStroke((Stroke) null, null, null, (String) null, (String) null);
         cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
         cartesian.xAxis(0).labels().padding(0d, 0d, 0d, 0d);
+        cartesian.xAxis(0).labels().format("{%value}{type:number, decimalsCount:2}");
         cartesian.legend().enabled(true);
         cartesian.legend().fontSize(13d);
         cartesian.legend().padding(0d, 0d, 10d, 0d);

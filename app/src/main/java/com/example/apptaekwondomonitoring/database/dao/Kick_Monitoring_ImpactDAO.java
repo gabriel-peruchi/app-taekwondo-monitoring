@@ -3,7 +3,9 @@ package com.example.apptaekwondomonitoring.database.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
+import com.example.apptaekwondomonitoring.ListMonitoringActivity;
 import com.example.apptaekwondomonitoring.database.DBOpenHelper;
 import com.example.apptaekwondomonitoring.models.Kick_Monitoring;
 import com.example.apptaekwondomonitoring.models.Kick_Monitoring_Impact;
@@ -69,6 +71,45 @@ public class Kick_Monitoring_ImpactDAO extends AbstractDAO {
         }
 
         return _id;
+    }
+
+    public void insertAll(List<Kick_Monitoring_Impact> kick_monitoring_impactList) {
+
+        String values = "";
+
+        for (Kick_Monitoring_Impact kick_monitoring_impact : kick_monitoring_impactList) {
+            values = values.concat(
+                    "(" + kick_monitoring_impact.getKick_monitoring().get_id() + ", " +
+                            kick_monitoring_impact.getSeconds() + ", " +
+                            kick_monitoring_impact.getAccel_x() + ", " +
+                            kick_monitoring_impact.getAccel_y() + ", " +
+                            kick_monitoring_impact.getAccel_z()
+                            + "),"
+            );
+        }
+
+        values = values.substring(0, values.length() - 1);
+        values = values.concat(";");
+
+        String comandSQL = "INSERT INTO "
+                + TABLE_NAME
+                + " ("
+                + COLUMN_KICK_MONITORING + ", "
+                + COLUMN_SECONDS + ", "
+                + COLUMN_ACCEL_X + ", "
+                + COLUMN_ACCEL_Y + ", "
+                + COLUMN_ACCEL_Z
+                + ") "
+                + "VALUES " + values;
+
+        try {
+            open();
+            database.execSQL(comandSQL);
+        } catch (Exception e) {
+            System.out.println("DATABASE INSERT ERROR " + e.getMessage());
+        } finally {
+            close();
+        }
     }
 
     public List<Kick_Monitoring_Impact> selectByKickMonitoring(Kick_Monitoring kick_monitoring) {

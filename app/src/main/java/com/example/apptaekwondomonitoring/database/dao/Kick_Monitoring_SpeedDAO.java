@@ -71,6 +71,44 @@ public class Kick_Monitoring_SpeedDAO extends AbstractDAO {
         return _id;
     }
 
+    public void insertAll(List<Kick_Monitoring_Speed> kick_monitoring_speedList) {
+        String values = "";
+
+        for (Kick_Monitoring_Speed kick_monitoring_speed : kick_monitoring_speedList) {
+            values = values.concat(
+                    "(" + kick_monitoring_speed.getKick_monitoring().get_id() + ", " +
+                            kick_monitoring_speed.getSeconds() + ", " +
+                            kick_monitoring_speed.getSpeed_x() + ", " +
+                            kick_monitoring_speed.getSpeed_y() + ", " +
+                            kick_monitoring_speed.getSpeed_z()
+                            + "),"
+            );
+        }
+
+        values = values.substring(0, values.length() - 1);
+        values = values.concat(";");
+
+        String comandSQL = "INSERT INTO "
+                + TABLE_NAME
+                + " ("
+                + COLUMN_KICK_MONITORING + ", "
+                + COLUMN_SECONDS + ", "
+                + COLUMN_SPEED_X + ", "
+                + COLUMN_SPEED_Y + ", "
+                + COLUMN_SPEED_Z
+                + ") "
+                + "VALUES " + values;
+
+        try {
+            open();
+            database.execSQL(comandSQL);
+        } catch (Exception e) {
+            System.out.println("DATABASE INSERT ERROR " + e.getMessage());
+        } finally {
+            close();
+        }
+    }
+
     public List<Kick_Monitoring_Speed> selectByKickMonitoring(Kick_Monitoring kick_monitoring) {
 
         List<Kick_Monitoring_Speed> kick_monitoring_speeds = new ArrayList<>();

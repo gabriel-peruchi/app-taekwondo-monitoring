@@ -9,4 +9,5 @@
     <color name="colorRed">#FF0000</color>
     <color name="colorGreen">#00DA24</color>
     <color name="colorBlue">#1B32C8</color>
+    <color name="colorToolbar">#3F51B5</color>
 </resources>

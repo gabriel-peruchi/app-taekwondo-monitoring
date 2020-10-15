@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,7 +34,6 @@ import com.example.apptaekwondomonitoring.models.Kick_Monitoring_Wearable;
 import com.example.apptaekwondomonitoring.models.Monitoring;
 import com.example.apptaekwondomonitoring.services.BluetoothConnection;
 import com.example.apptaekwondomonitoring.services.CalculateSpeed;
-import com.example.apptaekwondomonitoring.services.ImpactTime;
 import com.example.apptaekwondomonitoring.utils.AlertDialogUtils;
 import com.example.apptaekwondomonitoring.utils.BluetoothUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -64,6 +65,8 @@ public class StartMonitoringActivity extends AppCompatActivity {
     private FloatingActionButton button_kick_collection;
     private FloatingActionButton button_kick_save;
     private FloatingActionButton button_kick_discard;
+    private TextView txt_tollbal_start_monitoring;
+    private ImageButton image_button_disconnect_bluetooth;
 
     private StringBuilder data_module_impact = new StringBuilder();
     private List<AccelerationData> accelerations_data_module_impact = new ArrayList<>();
@@ -87,7 +90,7 @@ public class StartMonitoringActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_monitoring);
-        getSupportActionBar().setTitle(R.string.monitoring);
+        getSupportActionBar().hide();
 
         athlete = (Athlete) getIntent().getSerializableExtra("athlete");
         monitoring = (Monitoring) getIntent().getSerializableExtra("monitoring");
@@ -101,6 +104,17 @@ public class StartMonitoringActivity extends AppCompatActivity {
         button_kick_collection = findViewById(R.id.btn_kick_collection);
         button_kick_save = findViewById(R.id.btn_kick_save);
         button_kick_discard = findViewById(R.id.btn_kick_discard);
+        txt_tollbal_start_monitoring = findViewById(R.id.txt_toolbar_start_monitoring);
+        image_button_disconnect_bluetooth = findViewById(R.id.image_button_disconnect_bluetooth);
+
+        txt_tollbal_start_monitoring.setText(R.string.monitoring);
+
+        image_button_disconnect_bluetooth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                disconnect_bluetooth();
+            }
+        });
 
         button_finished_monitoring.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,26 +180,72 @@ public class StartMonitoringActivity extends AppCompatActivity {
                 receiveData ? R.drawable.ic_pause_white_44dp : R.drawable.ic_play_arrow_white_44dp
         );
 
-        bluetooth_connection_impact_module.write(receiveData ? "1" : "0");
-        bluetooth_connection_wearable_module.write(receiveData ? "1" : "0");
+        String comando = receiveData ? "1" : "0";
+
+        // Garante o envio
+        bluetooth_connection_impact_module.write(comando);
+        bluetooth_connection_impact_module.write(comando);
+        bluetooth_connection_wearable_module.write(comando);
+        bluetooth_connection_wearable_module.write(comando);
 
         if (!receiveData) {
             accelerations_data_module_impact = BluetoothUtils.convertDataToList(data_module_impact);
+            accelerations_data_module_impact = getSignificantValues(accelerations_data_module_impact, 9, 70, 70);
             APIlib.getInstance().setActiveAnyChartView(any_chart_view_module_impact);
             chart_cartesian_module_impact.setData(new ArrayList<ValueDataEntry>(accelerations_data_module_impact));
             data_module_impact.delete(0, data_module_impact.length());
 
             accelerations_data_module_wearable = BluetoothUtils.convertDataToList(data_module_wearable);
+            accelerations_data_module_wearable = getSignificantValues(accelerations_data_module_wearable, 5, 100, 250);
             APIlib.getInstance().setActiveAnyChartView(any_chart_view_module_wearable);
             chart_cartesian_module_wearable.setData(new ArrayList<ValueDataEntry>(accelerations_data_module_wearable));
             data_module_wearable.delete(0, data_module_wearable.length());
 
-            double timeImpact = ImpactTime.getTimeImpact(accelerations_data_module_impact, accelerations_data_module_wearable);
-
-            speed_data_calculated = CalculateSpeed.calculate(accelerations_data_module_wearable, timeImpact);
+            speed_data_calculated = CalculateSpeed.calculate(accelerations_data_module_wearable);
             APIlib.getInstance().setActiveAnyChartView(any_chart_view_speed_calculated);
             chart_cartesian_speed_calculated.setData(new ArrayList<ValueDataEntry>(speed_data_calculated));
         }
+    }
+
+    // Retorna somente valores significativos
+    public List<AccelerationData> getSignificantValues(List<AccelerationData> accelerationDataList, double limit, int intervalLeft, int intervalRight) {
+        List<AccelerationData> significantValues = new ArrayList<>();
+
+        AccelerationData accelerationDataLimit = null;
+        int indexAccelerationDataLimit = 0;
+
+        for (int i = 0; i < accelerationDataList.size(); i++) {
+            if (Math.abs(accelerationDataList.get(i).getAccelX()) >= limit ||
+                    Math.abs(accelerationDataList.get(i).getAccelY()) >= limit ||
+                    Math.abs(accelerationDataList.get(i).getAccelZ()) >= limit
+            ) {
+                accelerationDataLimit = accelerationDataList.get(i);
+                indexAccelerationDataLimit = i;
+                break;
+            }
+        }
+
+        if (accelerationDataLimit == null) {
+            return accelerationDataList;
+        }
+
+        try {
+            int initialIndex = intervalLeft <= indexAccelerationDataLimit ? indexAccelerationDataLimit - intervalLeft : 0;
+
+            for (int i = initialIndex; i < indexAccelerationDataLimit; i++) {
+                significantValues.add(accelerationDataList.get(i));
+            }
+
+            int finalIndex = Math.min(intervalRight + indexAccelerationDataLimit, accelerationDataList.size() - 1);
+
+            for (int i = indexAccelerationDataLimit; i <= finalIndex; i++) {
+                significantValues.add(accelerationDataList.get(i));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return significantValues.size() > 0 ? significantValues : accelerationDataList;
     }
 
     @SuppressLint("HandlerLeak")
@@ -246,6 +306,7 @@ public class StartMonitoringActivity extends AppCompatActivity {
     }
 
     public void buttonKickSaveListener() {
+        //TODO: Averiguar
         if (!(accelerations_data_module_impact.size() > 0) && !(accelerations_data_module_wearable.size() > 0)) {
             return;
         }
@@ -324,46 +385,57 @@ public class StartMonitoringActivity extends AppCompatActivity {
 
         kick_monitoring.set_id(id_kick_monitoring);
 
+        List<Kick_Monitoring_Impact> kick_monitoring_impactList = new ArrayList<>();
+
         // Salva todos os valores de impacto no banco
         for (AccelerationData accelerationDataImpact : accelerations_data_module_impact) {
 
             Kick_Monitoring_Impact kick_monitoring_impact = new Kick_Monitoring_Impact();
-
             kick_monitoring_impact.setSeconds(accelerationDataImpact.getSeconds());
             kick_monitoring_impact.setAccel_x(accelerationDataImpact.getAccelX());
             kick_monitoring_impact.setAccel_y(accelerationDataImpact.getAccelY());
             kick_monitoring_impact.setAccel_z(accelerationDataImpact.getAccelZ());
             kick_monitoring_impact.setKick_monitoring(kick_monitoring);
 
-            kick_monitoring_impactDAO.insert(kick_monitoring_impact);
+            kick_monitoring_impactList.add(kick_monitoring_impact);
         }
+
+        kick_monitoring_impactDAO.insertAll(kick_monitoring_impactList);
+
+        List<Kick_Monitoring_Wearable> kick_monitoring_wearableList = new ArrayList<>();
 
         // Salva todos os valores de aceleração do chute no banco
         for (AccelerationData accelerationDataWearable : accelerations_data_module_wearable) {
 
             Kick_Monitoring_Wearable kick_monitoring_wearable = new Kick_Monitoring_Wearable();
-
             kick_monitoring_wearable.setSeconds(accelerationDataWearable.getSeconds());
             kick_monitoring_wearable.setAccel_x(accelerationDataWearable.getAccelX());
             kick_monitoring_wearable.setAccel_y(accelerationDataWearable.getAccelY());
             kick_monitoring_wearable.setAccel_z(accelerationDataWearable.getAccelZ());
             kick_monitoring_wearable.setKick_monitoring(kick_monitoring);
 
-            kick_monitoring_wearableDAO.insert(kick_monitoring_wearable);
+            kick_monitoring_wearableList.add(kick_monitoring_wearable);
         }
+
+        kick_monitoring_wearableDAO.insertAll(kick_monitoring_wearableList);
+
+        List<Kick_Monitoring_Speed> kick_monitoring_speedList = new ArrayList<>();
 
         // Salva os valores de velocidade do chute calculados no banco
         for (SpeedData speedData : speed_data_calculated) {
 
             Kick_Monitoring_Speed kick_monitoring_speed = new Kick_Monitoring_Speed();
-
             kick_monitoring_speed.setSeconds(speedData.getSeconds());
             kick_monitoring_speed.setSpeed_x(speedData.getSpeedX());
             kick_monitoring_speed.setSpeed_y(speedData.getSpeedY());
             kick_monitoring_speed.setSpeed_z(speedData.getSpeedZ());
             kick_monitoring_speed.setKick_monitoring(kick_monitoring);
 
-            kick_monitoring_speedDAO.insert(kick_monitoring_speed);
+            kick_monitoring_speedList.add(kick_monitoring_speed);
+        }
+
+        if (speed_data_calculated.size() > 0) {
+            kick_monitoring_speedDAO.insertAll(kick_monitoring_speedList);
         }
 
         clearMonitoring();
@@ -422,6 +494,16 @@ public class StartMonitoringActivity extends AppCompatActivity {
 
         APIlib.getInstance().setActiveAnyChartView(any_chart_view_speed_calculated);
         chart_cartesian_speed_calculated.clearData();
+    }
+
+    public void disconnect_bluetooth() {
+        try {
+            bluetooth_connection_impact_module.close();
+            bluetooth_connection_wearable_module.close();
+            settingsConnectionBluetoothModules();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

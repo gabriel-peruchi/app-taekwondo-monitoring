@@ -12,7 +12,7 @@ public class CalculateSpeed {
     // Número de trapézios dentro de um intervalo (Quanto maior, mais precisão)
     private final static Integer NUMBER_DIVISION = 1;
 
-    public static List<SpeedData> calculate(final List<AccelerationData> accelerationDataList, double timeImpact) {
+    public static List<SpeedData> calculate(final List<AccelerationData> accelerationDataList) {
         List<SpeedData> speedDataList = new ArrayList<>();
 
         double speedSumX = 0.0;
@@ -20,6 +20,8 @@ public class CalculateSpeed {
         double speedSumZ = 0.0;
 
         boolean movimento = false;
+
+        double finalSecondsKick = getFinalSecondsKick(accelerationDataList);
 
         // Aceleração Inicial
         accelerationDataList.add(0, new AccelerationData(0, 0, 0, 0));
@@ -29,7 +31,7 @@ public class CalculateSpeed {
             AccelerationData accelerationData = accelerationDataList.get(i);
 
             // Identificação de movimento
-            if (accelerationData.getAccelX() > 1 || accelerationData.getAccelY() > 1 || accelerationData.getAccelZ() > 1) {
+            if (Math.abs(accelerationData.getAccelX()) > 4.9 || Math.abs(accelerationData.getAccelY()) > 4.9 || Math.abs(accelerationData.getAccelZ()) > 4.9) {
                 movimento = true;
             }
 
@@ -38,7 +40,7 @@ public class CalculateSpeed {
             }
 
             // Calcula até o momento do impacto
-            if (accelerationData.getSeconds() >= timeImpact) {
+            if (accelerationData.getSeconds() > finalSecondsKick) {
                 break;
             }
 
@@ -80,6 +82,24 @@ public class CalculateSpeed {
         }
 
         return speedDataList;
+    }
+
+    private static double getFinalSecondsKick(List<AccelerationData> accelerationDataList) {
+        double seconds = 0.0;
+        double accelZ = 0.0;
+
+        for (AccelerationData accelerationData : accelerationDataList) {
+            if (accelerationData.getAccelZ() >= accelZ) {
+                // Impacto
+                if (accelerationData.getAccelX() < -70) {
+                    break;
+                }
+                accelZ = accelerationData.getAccelZ();
+                seconds = accelerationData.getSeconds();
+            }
+        }
+
+        return seconds;
     }
 
     private static AccelerationData getAcclerationDataForSeconds(List<AccelerationData> accelerationDataList, double seconds) {

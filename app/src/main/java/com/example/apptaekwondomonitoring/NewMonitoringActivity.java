@@ -19,7 +19,9 @@ import com.example.apptaekwondomonitoring.database.dao.MonitoringDAO;
 import com.example.apptaekwondomonitoring.dialog.DialogSelector;
 import com.example.apptaekwondomonitoring.models.Athlete;
 import com.example.apptaekwondomonitoring.models.Monitoring;
+import com.example.apptaekwondomonitoring.utils.DateUtils;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +39,8 @@ public class NewMonitoringActivity extends AppCompatActivity {
     private EditText edit_weight_athlete;
     private EditText edit_height_athlete;
     private EditText edit_category_athlete;
+    private EditText edit_athlete_birth_date;
+    private EditText edit_training_time_athlete;
 
     private AthleteDAO athleteDAO;
     private MonitoringDAO monitoringDAO;
@@ -59,6 +63,10 @@ public class NewMonitoringActivity extends AppCompatActivity {
         edit_weight_athlete = findViewById(R.id.edit_weight_athlete);
         edit_height_athlete = findViewById(R.id.edit_height_athlete);
         edit_category_athlete = findViewById(R.id.edit_category_athlete);
+        edit_athlete_birth_date = findViewById(R.id.edit_athlete_birth_date);
+        edit_training_time_athlete = findViewById(R.id.edit_training_time_athlete);
+
+        DateUtils.addMaskDate(edit_athlete_birth_date);
 
         button_bluetooth_devices.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,10 +109,25 @@ public class NewMonitoringActivity extends AppCompatActivity {
 
         Athlete athlete = new Athlete();
 
+        Date birth_date = null;
+
+        try {
+            birth_date = DateUtils.dateParse(edit_athlete_birth_date.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if (birth_date == null) {
+            edit_athlete_birth_date.setError("Data inválida");
+            return;
+        }
+
         athlete.setName(edit_name_athlete.getText().toString());
+        athlete.setBirth_date(birth_date.getTime());
         athlete.setWeight(Double.parseDouble(edit_weight_athlete.getText().toString()));
         athlete.setHeight(Double.parseDouble(edit_height_athlete.getText().toString()));
         athlete.setCategory(edit_category_athlete.getText().toString());
+        athlete.setTraining_time(Double.parseDouble(edit_training_time_athlete.getText().toString()));
 
         long id_athlete = athleteDAO.insert(athlete);
 
@@ -133,6 +156,11 @@ public class NewMonitoringActivity extends AppCompatActivity {
             return false;
         }
 
+        if (edit_athlete_birth_date.getText().toString().isEmpty()) {
+            edit_athlete_birth_date.setError("Campo Obrigatório");
+            return false;
+        }
+
         if (edit_weight_athlete.getText().toString().isEmpty()) {
             edit_weight_athlete.setError("Campo Obrigatório");
             return false;
@@ -148,6 +176,11 @@ public class NewMonitoringActivity extends AppCompatActivity {
             return false;
         }
 
+        if (edit_training_time_athlete.getText().toString().isEmpty()) {
+            edit_training_time_athlete.setError("Campo Obrigatório");
+            return false;
+        }
+
         return true;
     }
 
@@ -159,6 +192,7 @@ public class NewMonitoringActivity extends AppCompatActivity {
             startActivityForResult(enableBluetoothIntent, ENABLE_BLUETOOTH);
         } else {
             bluetoothAble = true;
+            buttonStarMonitoringListener();
         }
     }
 

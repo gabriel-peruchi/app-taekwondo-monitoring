@@ -71,6 +71,44 @@ public class Kick_Monitoring_WearableDAO extends AbstractDAO {
         return _id;
     }
 
+    public void insertAll(List<Kick_Monitoring_Wearable> kick_monitoring_wearableList) {
+        String values = "";
+
+        for (Kick_Monitoring_Wearable kick_monitoring_wearable : kick_monitoring_wearableList) {
+            values = values.concat(
+                    "(" + kick_monitoring_wearable.getKick_monitoring().get_id() + ", " +
+                            kick_monitoring_wearable.getSeconds() + ", " +
+                            kick_monitoring_wearable.getAccel_x() + ", " +
+                            kick_monitoring_wearable.getAccel_y() + ", " +
+                            kick_monitoring_wearable.getAccel_z()
+                            + "),"
+            );
+        }
+
+        values = values.substring(0, values.length() - 1);
+        values = values.concat(";");
+
+        String comandSQL = "INSERT INTO "
+                + TABLE_NAME
+                + " ("
+                + COLUMN_KICK_MONITORING + ", "
+                + COLUMN_SECONDS + ", "
+                + COLUMN_ACCEL_X + ", "
+                + COLUMN_ACCEL_Y + ", "
+                + COLUMN_ACCEL_Z
+                + ") "
+                + "VALUES " + values;
+
+        try {
+            open();
+            database.execSQL(comandSQL);
+        } catch (Exception e) {
+            System.out.println("DATABASE INSERT ERROR " + e.getMessage());
+        } finally {
+            close();
+        }
+    }
+
     public List<Kick_Monitoring_Wearable> selectByKickMonitoring(Kick_Monitoring kick_monitoring) {
 
         List<Kick_Monitoring_Wearable> kick_monitoring_wearable_list = new ArrayList<>();

@@ -27,7 +27,9 @@
             android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".ListMonitoringActivity" />
         <activity android:name=".ResumeMonitoringActivity" />
-        <activity android:name=".KickMonitoringActivity" />
+        <activity
+            android:name=".KickMonitoringActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden" />
     </application>
 
 </manifest>

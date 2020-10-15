@@ -1,7 +1,6 @@
 package com.example.apptaekwondomonitoring;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -70,7 +69,10 @@ public class KickMonitoringActivity extends AppCompatActivity {
 
         kick_monitoring = (Kick_Monitoring) getIntent().getSerializableExtra("kick_monitoring");
 
-        constructCardInfo();
+        txt_name_athlete.setText(kick_monitoring.getMonitoring().getAthlete().getName());
+        txt_name_kick.setText(String.valueOf(kick_monitoring.get_id()));
+
+        //constructCardInfo();
         constructCharImpact();
         constructCharWearable();
         constructCharSpeed();
@@ -90,8 +92,6 @@ public class KickMonitoringActivity extends AppCompatActivity {
         Double max_velocity_kick_y = NumberUtils.toFixedTwo(kick_monitoring.getMax_velocity_kick_y());
         Double max_velocity_kick_z = NumberUtils.toFixedTwo(kick_monitoring.getMax_velocity_kick_z());
 
-        txt_name_athlete.setText(kick_monitoring.getMonitoring().getAthlete().getName());
-        txt_name_kick.setText(String.valueOf(kick_monitoring.get_id()));
         txt_max_value_impact_x.setText(String.valueOf(max_impact_x));
         txt_max_value_impact_y.setText(String.valueOf(max_impact_y));
         txt_max_value_impact_z.setText(String.valueOf(max_impact_z));
@@ -111,6 +111,7 @@ public class KickMonitoringActivity extends AppCompatActivity {
         ChartCartesian chartCartesian = new ChartCartesian();
         chartCartesian.createDefaultSettings("Valores de Impacto do Chute");
         chartCartesian.setLegends(getString(R.string.accel_meters_per_second), getString(R.string.time_second));
+        chartCartesian.setView(chart_kick_monitoring_impact);
 
         List<Kick_Monitoring_Impact> kick_monitoring_impactList = kick_monitoring_impactDAO
                 .selectByKickMonitoring(kick_monitoring);
@@ -120,7 +121,6 @@ public class KickMonitoringActivity extends AppCompatActivity {
         );
 
         chartCartesian.setData(new ArrayList<ValueDataEntry>(values_impact));
-        chartCartesian.setView(chart_kick_monitoring_impact);
     }
 
     private void constructCharWearable() {
@@ -130,6 +130,7 @@ public class KickMonitoringActivity extends AppCompatActivity {
         ChartCartesian chartCartesian = new ChartCartesian();
         chartCartesian.createDefaultSettings("Valores de Aceleração do Chute");
         chartCartesian.setLegends(getString(R.string.accel_meters_per_second), getString(R.string.time_second));
+        chartCartesian.setView(chart_kick_monitoring_wearable);
 
         List<Kick_Monitoring_Wearable> kick_monitoring_wearableList = kick_monitoring_wearableDAO
                 .selectByKickMonitoring(kick_monitoring);
@@ -139,7 +140,6 @@ public class KickMonitoringActivity extends AppCompatActivity {
         );
 
         chartCartesian.setData(new ArrayList<ValueDataEntry>(values_wearable));
-        chartCartesian.setView(chart_kick_monitoring_wearable);
     }
 
     private void constructCharSpeed() {
@@ -149,10 +149,7 @@ public class KickMonitoringActivity extends AppCompatActivity {
         ChartCartesian chartCartesian = new ChartCartesian();
         chartCartesian.createDefaultSettings("Valores de Velocidade do Chute");
         chartCartesian.setLegends(getString(R.string.speed_meters_per_second), getString(R.string.time_second));
-
-        if (kick_monitoring == null) {
-            Log.d("kick", "é nulo");
-        }
+        chartCartesian.setView(chart_kick_monitoring_speed);
 
         List<Kick_Monitoring_Speed> kick_monitoring_speedList = kick_monitoring_speedDAO
                 .selectByKickMonitoring(kick_monitoring);
@@ -162,7 +159,6 @@ public class KickMonitoringActivity extends AppCompatActivity {
         );
 
         chartCartesian.setData(new ArrayList<ValueDataEntry>(values_speed));
-        chartCartesian.setView(chart_kick_monitoring_speed);
     }
 
     private List<AccelerationData> convertToAccelerationData(List<Kick_Monitoring_Accel> kick_monitoring_accelList) {

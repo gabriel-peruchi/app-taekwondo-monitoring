@@ -17,18 +17,22 @@ public class AthleteDAO extends AbstractDAO {
     public static final String
             COLUMN_ID = "_id",
             COLUMN_NAME = "name",
+            COLUMN_BIRTH_DATE = "birth_date",
             COLUMN_WEIGHT = "weight",
             COLUMN_HEIGHT = "height",
-            COLUMN_CATEGORY = "category";
+            COLUMN_CATEGORY = "category",
+            COLUMN_TRAINING_TIME = "training_time";
 
     public static final String
             CREATE_TABLE = "create table " + TABLE_NAME
             + "("
             + COLUMN_ID + " integer not null primary key autoincrement, "
             + COLUMN_NAME + " varchar(100) not null, "
+            + COLUMN_BIRTH_DATE + " integer not null, "
             + COLUMN_WEIGHT + " decimal(10,2) not null, "
             + COLUMN_HEIGHT + " decimal(10,2) not null, "
-            + COLUMN_CATEGORY + " varchar(100) not null"
+            + COLUMN_CATEGORY + " varchar(100) not null, "
+            + COLUMN_TRAINING_TIME + " decimal(10,2) not null"
             + ");";
 
     public static final String DROP_TABLE = "drop table if exists " + TABLE_NAME;
@@ -36,9 +40,11 @@ public class AthleteDAO extends AbstractDAO {
     private final String[] colunas = {
             COLUMN_ID,
             COLUMN_NAME,
+            COLUMN_BIRTH_DATE,
             COLUMN_WEIGHT,
             COLUMN_HEIGHT,
             COLUMN_CATEGORY,
+            COLUMN_TRAINING_TIME
     };
 
     public AthleteDAO(Context context) {
@@ -115,9 +121,11 @@ public class AthleteDAO extends AbstractDAO {
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(COLUMN_NAME, athlete.getName());
+        contentValues.put(COLUMN_BIRTH_DATE, athlete.getBirth_date());
         contentValues.put(COLUMN_WEIGHT, athlete.getWeight());
         contentValues.put(COLUMN_HEIGHT, athlete.getHeight());
         contentValues.put(COLUMN_CATEGORY, athlete.getCategory());
+        contentValues.put(COLUMN_TRAINING_TIME, athlete.getTraining_time());
 
         return contentValues;
     }
@@ -127,9 +135,11 @@ public class AthleteDAO extends AbstractDAO {
 
         athlete.set_id(cursor.getLong(0));
         athlete.setName(cursor.getString(1));
-        athlete.setWeight(cursor.getDouble(2));
-        athlete.setHeight(cursor.getDouble(3));
-        athlete.setCategory(cursor.getString(4));
+        athlete.setBirth_date(cursor.getLong(2));
+        athlete.setWeight(cursor.getDouble(3));
+        athlete.setHeight(cursor.getDouble(4));
+        athlete.setCategory(cursor.getString(5));
+        athlete.setTraining_time(cursor.getDouble(6));
 
         return athlete;
     }

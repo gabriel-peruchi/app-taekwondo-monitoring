@@ -16,7 +16,7 @@ import com.example.apptaekwondomonitoring.database.dao.MonitoringDAO;
 public class DBOpenHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "banco.db";
-    private static final Integer DATABASE_VERSION = 5;
+    private static final Integer DATABASE_VERSION = 7;
 
     public DBOpenHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
