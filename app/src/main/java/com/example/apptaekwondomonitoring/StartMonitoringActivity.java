@@ -47,7 +47,7 @@ public class StartMonitoringActivity extends AppCompatActivity {
 
     private static final String ADDRESS_IMPACT_MODULE = "00:18:91:D8:3B:4E";
     private static final String ADDRESS_WEARABLE_MODULE = "00:19:08:00:50:C6";
-//    private static final String ADDRESS_WEARABLE_MODULE = "00:18:91:D8:3D:97"; // Secundário
+//    private static final String ADDRESS_WEARABLE_MODULE = "00:18:91:D8:3D:97"; // Módulo Vestível Reserva
 
     private BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private BluetoothConnection bluetooth_connection_impact_module;
@@ -306,8 +306,7 @@ public class StartMonitoringActivity extends AppCompatActivity {
     }
 
     public void buttonKickSaveListener() {
-        //TODO: Averiguar
-        if (!(accelerations_data_module_impact.size() > 0) && !(accelerations_data_module_wearable.size() > 0)) {
+        if (accelerations_data_module_impact.size() == 0 || accelerations_data_module_wearable.size() == 0) {
             return;
         }
 
@@ -395,6 +394,7 @@ public class StartMonitoringActivity extends AppCompatActivity {
             kick_monitoring_impact.setAccel_x(accelerationDataImpact.getAccelX());
             kick_monitoring_impact.setAccel_y(accelerationDataImpact.getAccelY());
             kick_monitoring_impact.setAccel_z(accelerationDataImpact.getAccelZ());
+            kick_monitoring_impact.setResulting(accelerationDataImpact.getResulting());
             kick_monitoring_impact.setKick_monitoring(kick_monitoring);
 
             kick_monitoring_impactList.add(kick_monitoring_impact);
@@ -412,6 +412,7 @@ public class StartMonitoringActivity extends AppCompatActivity {
             kick_monitoring_wearable.setAccel_x(accelerationDataWearable.getAccelX());
             kick_monitoring_wearable.setAccel_y(accelerationDataWearable.getAccelY());
             kick_monitoring_wearable.setAccel_z(accelerationDataWearable.getAccelZ());
+            kick_monitoring_wearable.setResulting(accelerationDataWearable.getResulting());
             kick_monitoring_wearable.setKick_monitoring(kick_monitoring);
 
             kick_monitoring_wearableList.add(kick_monitoring_wearable);
@@ -429,6 +430,7 @@ public class StartMonitoringActivity extends AppCompatActivity {
             kick_monitoring_speed.setSpeed_x(speedData.getSpeedX());
             kick_monitoring_speed.setSpeed_y(speedData.getSpeedY());
             kick_monitoring_speed.setSpeed_z(speedData.getSpeedZ());
+            kick_monitoring_speed.setResulting(speedData.getResulting());
             kick_monitoring_speed.setKick_monitoring(kick_monitoring);
 
             kick_monitoring_speedList.add(kick_monitoring_speed);

@@ -25,13 +25,16 @@ public class BluetoothUtils {
                 String[] dataAccelerations = value.split("\\|");
 
                 Number seconds = Double.parseDouble(dataAccelerations[0]);
-                Number accelX = Double.parseDouble(dataAccelerations[1]) * 9.8;
-                Number accelY = Double.parseDouble(dataAccelerations[2]) * 9.8;
-                Number accelZ = Double.parseDouble(dataAccelerations[3]) > 0
+                // Converte de g para m/s²
+                double accelX = Double.parseDouble(dataAccelerations[1]) * 9.8;
+                double accelY = Double.parseDouble(dataAccelerations[2]) * 9.8;
+                double accelZ = Double.parseDouble(dataAccelerations[3]) > 0
                         ? (Double.parseDouble(dataAccelerations[3]) * 9.8) - 9.8
                         : (Double.parseDouble(dataAccelerations[3]) * 9.8); // Retira a aceleração da gravidade
 
-                AccelerationData accelerationData = new AccelerationData(seconds, accelX, accelY, accelZ);
+                Number resulting = Math.sqrt(Math.pow(accelX, 2) + Math.pow(accelY, 2) + Math.pow(accelZ, 2));
+
+                AccelerationData accelerationData = new AccelerationData(seconds, accelX, accelY, accelZ, resulting);
 
                 accelerationDataList.add(accelerationData);
             }

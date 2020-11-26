@@ -8,17 +8,19 @@ public class Kick_Monitoring_Accel {
     private Double accel_x;
     private Double accel_y;
     private Double accel_z;
+    private Double resulting;
 
     public Kick_Monitoring_Accel() {
 
     }
 
-    public Kick_Monitoring_Accel(Long _id, Double seconds, Double accel_x, Double accel_y, Double accel_z) {
+    public Kick_Monitoring_Accel(Long _id, Double seconds, Double accel_x, Double accel_y, Double accel_z, Double resulting) {
         this._id = _id;
         this.seconds = seconds;
         this.accel_x = accel_x;
         this.accel_y = accel_y;
         this.accel_z = accel_z;
+        this.resulting = resulting;
     }
 
     public Long get_id() {
@@ -67,5 +69,13 @@ public class Kick_Monitoring_Accel {
 
     public void setAccel_z(Double accel_z) {
         this.accel_z = accel_z;
+    }
+
+    public Double getResulting() {
+        return resulting;
+    }
+
+    public void setResulting(Double resulting) {
+        this.resulting = resulting;
     }
 }

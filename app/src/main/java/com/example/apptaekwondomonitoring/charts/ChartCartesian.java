@@ -51,7 +51,7 @@ public class ChartCartesian {
     public void setData(List<ValueDataEntry> valueDataEntries) {
 
         if (valueDataEntries.size() == 0) {
-            valueDataEntries.add(new AccelerationData(0, 0, 0, 0));
+            valueDataEntries.add(new AccelerationData(0, 0, 0, 0, 0));
         }
 
         List<DataEntry> dataEntries = new ArrayList<DataEntry>(valueDataEntries);
@@ -64,6 +64,7 @@ public class ChartCartesian {
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'value' }"); // Line X
         Mapping series2Mapping = set.mapAs("{ x: 'x', value: 'value2' }"); // Line Y
         Mapping series3Mapping = set.mapAs("{ x: 'x', value: 'value3' }"); // Line Z
+        Mapping series4Mapping = set.mapAs("{ x: 'x', value: 'value4' }"); // Line Resulting
 
         Line series1 = cartesian.line(series1Mapping);
         series1.color("#008000");
@@ -99,6 +100,19 @@ public class ChartCartesian {
                 .type(MarkerType.CIRCLE)
                 .size(4d);
         series3.tooltip()
+                .position("right")
+                .anchor(Anchor.LEFT_CENTER)
+                .offsetX(5d)
+                .offsetY(5d);
+
+        Line series4 = cartesian.line(series4Mapping);
+        series4.color("#000000");
+        series4.name("RES");
+        series4.hovered().markers().enabled(true);
+        series4.hovered().markers()
+                .type(MarkerType.CIRCLE)
+                .size(4d);
+        series4.tooltip()
                 .position("right")
                 .anchor(Anchor.LEFT_CENTER)
                 .offsetX(5d)

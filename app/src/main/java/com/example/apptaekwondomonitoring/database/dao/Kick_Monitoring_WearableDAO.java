@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Kick_Monitoring_WearableDAO extends AbstractDAO {
 
-    private static final String TABLE_NAME = "tb_kick_monitoring_wearable";
+    public static final String TABLE_NAME = "tb_kick_monitoring_wearable";
 
     private static final String
             COLUMN_ID = "_id",
@@ -21,7 +21,8 @@ public class Kick_Monitoring_WearableDAO extends AbstractDAO {
             COLUMN_SECONDS = "seconds",
             COLUMN_ACCEL_X = "accel_x",
             COLUMN_ACCEL_Y = "accel_y",
-            COLUMN_ACCEL_Z = "accel_z";
+            COLUMN_ACCEL_Z = "accel_z",
+            COLUMN_RESULTING = "resulting";
 
     public static final String
             CREATE_TABLE = "create table " + TABLE_NAME
@@ -32,6 +33,7 @@ public class Kick_Monitoring_WearableDAO extends AbstractDAO {
             + COLUMN_ACCEL_X + " decimal(10,2), "
             + COLUMN_ACCEL_Y + " decimal(10,2), "
             + COLUMN_ACCEL_Z + " decimal(10,2), "
+            + COLUMN_RESULTING + " decimal(10,2), "
             + "foreign key (" + COLUMN_KICK_MONITORING + ") REFERENCES tb_kick_monitoring ( " + Kick_MonitoringDAO.COLUMN_ID + ")"
             + ");";
 
@@ -43,7 +45,8 @@ public class Kick_Monitoring_WearableDAO extends AbstractDAO {
             COLUMN_SECONDS,
             COLUMN_ACCEL_X,
             COLUMN_ACCEL_Y,
-            COLUMN_ACCEL_Z
+            COLUMN_ACCEL_Z,
+            COLUMN_RESULTING
     };
 
     private Kick_MonitoringDAO kick_monitoringDAO;
@@ -80,7 +83,8 @@ public class Kick_Monitoring_WearableDAO extends AbstractDAO {
                             kick_monitoring_wearable.getSeconds() + ", " +
                             kick_monitoring_wearable.getAccel_x() + ", " +
                             kick_monitoring_wearable.getAccel_y() + ", " +
-                            kick_monitoring_wearable.getAccel_z()
+                            kick_monitoring_wearable.getAccel_z() + ", " +
+                            kick_monitoring_wearable.getResulting()
                             + "),"
             );
         }
@@ -95,7 +99,8 @@ public class Kick_Monitoring_WearableDAO extends AbstractDAO {
                 + COLUMN_SECONDS + ", "
                 + COLUMN_ACCEL_X + ", "
                 + COLUMN_ACCEL_Y + ", "
-                + COLUMN_ACCEL_Z
+                + COLUMN_ACCEL_Z + ", "
+                + COLUMN_RESULTING
                 + ") "
                 + "VALUES " + values;
 
@@ -107,6 +112,30 @@ public class Kick_Monitoring_WearableDAO extends AbstractDAO {
         } finally {
             close();
         }
+    }
+
+    public Long update(Kick_Monitoring_Wearable kick_monitoring_wearable) {
+
+        long linhasAfetadas = 0;
+
+        try {
+
+            open();
+
+            linhasAfetadas = database.update(
+                    Kick_Monitoring_WearableDAO.TABLE_NAME, getValuesKickMonitoringWearable(kick_monitoring_wearable),
+                    Kick_Monitoring_WearableDAO.COLUMN_ID + "= ?",
+                    new String[]{String.valueOf(kick_monitoring_wearable.get_id())}
+            );
+
+
+        } catch (Exception e) {
+            System.out.println("DATABASE ERROR " + e.getMessage());
+        } finally {
+            close();
+        }
+
+        return linhasAfetadas;
     }
 
     public List<Kick_Monitoring_Wearable> selectByKickMonitoring(Kick_Monitoring kick_monitoring) {
@@ -167,6 +196,7 @@ public class Kick_Monitoring_WearableDAO extends AbstractDAO {
         contentValues.put(COLUMN_ACCEL_X, kick_monitoring_wearable.getAccel_x());
         contentValues.put(COLUMN_ACCEL_Y, kick_monitoring_wearable.getAccel_y());
         contentValues.put(COLUMN_ACCEL_Z, kick_monitoring_wearable.getAccel_z());
+        contentValues.put(COLUMN_RESULTING, kick_monitoring_wearable.getResulting());
 
         return contentValues;
     }
@@ -180,6 +210,7 @@ public class Kick_Monitoring_WearableDAO extends AbstractDAO {
         kick_monitoring_wearable.setAccel_x(cursor.getDouble(3));
         kick_monitoring_wearable.setAccel_y(cursor.getDouble(4));
         kick_monitoring_wearable.setAccel_z(cursor.getDouble(5));
+        kick_monitoring_wearable.setResulting(cursor.getDouble(6));
 
         return kick_monitoring_wearable;
     }

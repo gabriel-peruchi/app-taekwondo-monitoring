@@ -8,17 +8,19 @@ public class Kick_Monitoring_Speed {
     private Double speed_x;
     private Double speed_y;
     private Double speed_z;
+    private Double resulting;
 
     public Kick_Monitoring_Speed() {
 
     }
 
-    public Kick_Monitoring_Speed(Long _id, Double seconds, Double speed_x, Double speed_y, Double speed_z) {
+    public Kick_Monitoring_Speed(Long _id, Double seconds, Double speed_x, Double speed_y, Double speed_z, Double resulting) {
         this._id = _id;
         this.seconds = seconds;
         this.speed_x = speed_x;
         this.speed_y = speed_y;
         this.speed_z = speed_z;
+        this.resulting = resulting;
     }
 
     public Long get_id() {
@@ -67,5 +69,13 @@ public class Kick_Monitoring_Speed {
 
     public void setSpeed_z(Double speed_z) {
         this.speed_z = speed_z;
+    }
+
+    public Double getResulting() {
+        return resulting;
+    }
+
+    public void setResulting(Double resulting) {
+        this.resulting = resulting;
     }
 }

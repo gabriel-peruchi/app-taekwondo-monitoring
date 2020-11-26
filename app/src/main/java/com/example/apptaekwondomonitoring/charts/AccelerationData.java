@@ -6,10 +6,11 @@ import com.anychart.chart.common.dataentry.ValueDataEntry;
 
 public class AccelerationData extends ValueDataEntry implements Comparable<AccelerationData> {
 
-    public AccelerationData(Number seconds, Number accelX, Number accelY, Number accelZ) {
+    public AccelerationData(Number seconds, Number accelX, Number accelY, Number accelZ, Number resulting) {
         super(seconds, accelX);
         setValue("value2", accelY);
         setValue("value3", accelZ);
+        setValue("value4", resulting);
     }
 
     public Double getSeconds() {
@@ -28,6 +29,10 @@ public class AccelerationData extends ValueDataEntry implements Comparable<Accel
         return Double.parseDouble((String) getValue("value3"));
     }
 
+    public Double getResulting() {
+        return Double.parseDouble((String) getValue("value4"));
+    }
+
     @Override
     public int compareTo(AccelerationData otherAcclerationData) {
         return this.getSeconds().compareTo(otherAcclerationData.getSeconds());
@@ -36,6 +41,6 @@ public class AccelerationData extends ValueDataEntry implements Comparable<Accel
     @NonNull
     @Override
     public String toString() {
-        return "{" + getSeconds() + " | " + getAccelX() + " | " + getAccelY() + " | " + getAccelZ() + "}";
+        return "{" + getSeconds() + " | " + getAccelX() + " | " + getAccelY() + " | " + getAccelZ() + " | " + getResulting() + "}";
     }
 }

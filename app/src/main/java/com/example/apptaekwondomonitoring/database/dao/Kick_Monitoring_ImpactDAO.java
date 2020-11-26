@@ -3,9 +3,7 @@ package com.example.apptaekwondomonitoring.database.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
-import com.example.apptaekwondomonitoring.ListMonitoringActivity;
 import com.example.apptaekwondomonitoring.database.DBOpenHelper;
 import com.example.apptaekwondomonitoring.models.Kick_Monitoring;
 import com.example.apptaekwondomonitoring.models.Kick_Monitoring_Impact;
@@ -15,7 +13,7 @@ import java.util.List;
 
 public class Kick_Monitoring_ImpactDAO extends AbstractDAO {
 
-    private static final String TABLE_NAME = "tb_kick_monitoring_impact";
+    public static final String TABLE_NAME = "tb_kick_monitoring_impact";
 
     private static final String
             COLUMN_ID = "_id",
@@ -23,7 +21,8 @@ public class Kick_Monitoring_ImpactDAO extends AbstractDAO {
             COLUMN_SECONDS = "seconds",
             COLUMN_ACCEL_X = "accel_x",
             COLUMN_ACCEL_Y = "accel_y",
-            COLUMN_ACCEL_Z = "accel_z";
+            COLUMN_ACCEL_Z = "accel_z",
+            COLUMN_RESULTING = "resulting";
 
     public static final String
             CREATE_TABLE = "create table " + TABLE_NAME
@@ -34,6 +33,7 @@ public class Kick_Monitoring_ImpactDAO extends AbstractDAO {
             + COLUMN_ACCEL_X + " decimal(10,2), "
             + COLUMN_ACCEL_Y + " decimal(10,2), "
             + COLUMN_ACCEL_Z + " decimal(10,2), "
+            + COLUMN_RESULTING + " decimal(10,2), "
             + "foreign key (" + COLUMN_KICK_MONITORING + ") REFERENCES tb_kick_monitoring ( " + Kick_MonitoringDAO.COLUMN_ID + ")"
             + ");";
 
@@ -45,7 +45,8 @@ public class Kick_Monitoring_ImpactDAO extends AbstractDAO {
             COLUMN_SECONDS,
             COLUMN_ACCEL_X,
             COLUMN_ACCEL_Y,
-            COLUMN_ACCEL_Z
+            COLUMN_ACCEL_Z,
+            COLUMN_RESULTING
     };
 
     private Kick_MonitoringDAO kick_monitoringDAO;
@@ -83,7 +84,8 @@ public class Kick_Monitoring_ImpactDAO extends AbstractDAO {
                             kick_monitoring_impact.getSeconds() + ", " +
                             kick_monitoring_impact.getAccel_x() + ", " +
                             kick_monitoring_impact.getAccel_y() + ", " +
-                            kick_monitoring_impact.getAccel_z()
+                            kick_monitoring_impact.getAccel_z() + ", " +
+                            kick_monitoring_impact.getResulting()
                             + "),"
             );
         }
@@ -98,7 +100,8 @@ public class Kick_Monitoring_ImpactDAO extends AbstractDAO {
                 + COLUMN_SECONDS + ", "
                 + COLUMN_ACCEL_X + ", "
                 + COLUMN_ACCEL_Y + ", "
-                + COLUMN_ACCEL_Z
+                + COLUMN_ACCEL_Z + ", "
+                + COLUMN_RESULTING
                 + ") "
                 + "VALUES " + values;
 
@@ -110,6 +113,30 @@ public class Kick_Monitoring_ImpactDAO extends AbstractDAO {
         } finally {
             close();
         }
+    }
+
+    public Long update(Kick_Monitoring_Impact kick_monitoring_impact) {
+
+        long linhasAfetadas = 0;
+
+        try {
+
+            open();
+
+            linhasAfetadas = database.update(
+                    Kick_Monitoring_ImpactDAO.TABLE_NAME, getValuesKickMonitoringImpact(kick_monitoring_impact),
+                    Kick_Monitoring_ImpactDAO.COLUMN_ID + "= ?",
+                    new String[]{String.valueOf(kick_monitoring_impact.get_id())}
+            );
+
+
+        } catch (Exception e) {
+            System.out.println("DATABASE ERROR " + e.getMessage());
+        } finally {
+            close();
+        }
+
+        return linhasAfetadas;
     }
 
     public List<Kick_Monitoring_Impact> selectByKickMonitoring(Kick_Monitoring kick_monitoring) {
@@ -170,6 +197,7 @@ public class Kick_Monitoring_ImpactDAO extends AbstractDAO {
         contentValues.put(COLUMN_ACCEL_X, kick_monitoring_impact.getAccel_x());
         contentValues.put(COLUMN_ACCEL_Y, kick_monitoring_impact.getAccel_y());
         contentValues.put(COLUMN_ACCEL_Z, kick_monitoring_impact.getAccel_z());
+        contentValues.put(COLUMN_RESULTING, kick_monitoring_impact.getResulting());
 
         return contentValues;
     }
@@ -183,6 +211,7 @@ public class Kick_Monitoring_ImpactDAO extends AbstractDAO {
         kick_monitoring_impact.setAccel_x(cursor.getDouble(3));
         kick_monitoring_impact.setAccel_y(cursor.getDouble(4));
         kick_monitoring_impact.setAccel_z(cursor.getDouble(5));
+        kick_monitoring_impact.setResulting(cursor.getDouble(6));
 
         return kick_monitoring_impact;
     }

@@ -13,7 +13,7 @@ import com.example.apptaekwondomonitoring.interfaces.AdapterItemClick;
 import com.example.apptaekwondomonitoring.models.Kick_Monitoring;
 import com.example.apptaekwondomonitoring.models.Monitoring;
 import com.example.apptaekwondomonitoring.utils.DateUtils;
-import com.example.apptaekwondomonitoring.utils.NumberUtils;
+import com.example.apptaekwondomonitoring.utils.MathUtils;
 
 import java.util.List;
 
@@ -124,15 +124,15 @@ public class ResumeMonitoringActivity extends AppCompatActivity {
             }
         }
 
-        max_impact_x = NumberUtils.toFixedTwo(max_impact_x);
-        max_impact_y = NumberUtils.toFixedTwo(max_impact_y);
-        max_impact_z = NumberUtils.toFixedTwo(max_impact_z);
-        max_accel_kick_x = NumberUtils.toFixedTwo(max_accel_kick_x);
-        max_accel_kick_y = NumberUtils.toFixedTwo(max_accel_kick_y);
-        max_accel_kick_z = NumberUtils.toFixedTwo(max_accel_kick_z);
-        max_velocity_kick_x = NumberUtils.toFixedTwo(max_velocity_kick_x);
-        max_velocity_kick_y = NumberUtils.toFixedTwo(max_velocity_kick_y);
-        max_velocity_kick_z = NumberUtils.toFixedTwo(max_velocity_kick_z);
+        max_impact_x = MathUtils.toFixed(max_impact_x, 2);
+        max_impact_y = MathUtils.toFixed(max_impact_y, 2);
+        max_impact_z = MathUtils.toFixed(max_impact_z, 2);
+        max_accel_kick_x = MathUtils.toFixed(max_accel_kick_x, 2);
+        max_accel_kick_y = MathUtils.toFixed(max_accel_kick_y, 2);
+        max_accel_kick_z = MathUtils.toFixed(max_accel_kick_z, 2);
+        max_velocity_kick_x = MathUtils.toFixed(max_velocity_kick_x, 2);
+        max_velocity_kick_y = MathUtils.toFixed(max_velocity_kick_y, 2);
+        max_velocity_kick_z = MathUtils.toFixed(max_velocity_kick_z, 2);
 
         txt_monitoring_code.setText(String.valueOf(monitoring.get_id()));
         txt_monitoring_date.setText(DateUtils.dateFormat(monitoring.getDate()));

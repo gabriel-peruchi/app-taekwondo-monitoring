@@ -52,4 +52,8 @@
     <string name="time_second">Tempo (s)</string>
     <string name="birth_date_athlete">Data Nascimento</string>
     <string name="training_time_athlete">Tempo de Treinamento</string>
+    <string name="recalculate_speed">Recalcular Velocidade</string>
+    <string name="recalculate">Recalcular</string>
+    <string name="save">Salvar</string>
+    <string name="execution_time">Tempo Execução (s)</string>
 </resources>
